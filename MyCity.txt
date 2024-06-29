@@ -1,0 +1,340 @@
+# Define the dimensions for clearing the area for the houses
+clear_width, clear_height, clear_depth = 100, 20, 50
+
+# Function to build a simple house
+def build_house(x, y, z):
+    width, height, length = 7, 6, 7
+    # Remove the grass under the house
+    blocks.fill(AIR, pos(x, y, z), pos(x + width, y, z + length))
+    # Create the floor
+    blocks.fill(PLANKS_OAK, pos(x, y, z), pos(x + width, y, z + length))
+    # Create the walls
+    blocks.fill(BRICKS, pos(x, y + 1, z), pos(x, y + height - 1, z + length))
+    blocks.fill(BRICKS, pos(x + width, y + 1, z), pos(x + width, y + height - 1, z + length))
+    blocks.fill(BRICKS, pos(x, y + 1, z), pos(x + width, y + height - 1, z))
+    blocks.fill(BRICKS, pos(x, y + 1, z + length), pos(x + width, y + height - 1, z + length))
+    # Create the roof
+    blocks.fill(BIRCH_WOOD, pos(x, y + height, z), pos(x + width, y + height, z + length))
+    # Create the door
+    blocks.fill(AIR, pos(x + 3, y + 1, z), pos(x + 3, y + 2, z))
+    # Create windows
+    blocks.fill(GLASS_PANE, pos(x, y + 2, z + 2), pos(x, y + 3, z + 3))
+    blocks.fill(GLASS_PANE, pos(x + width, y + 2, z + 2), pos(x + width, y + 3, z + 3))
+    blocks.fill(GLASS_PANE, pos(x + 2, y + 2, z + length), pos(x + 4, y + 3, z + length))
+
+# Function to create a tree without gaps between wood blocks
+def build_tree(x, y, z):
+    # Create the trunk
+    blocks.fill(PLANKS_OAK, pos(x - 1, y, z - 1), pos(x + 1, y + 4, z + 1))
+    # Create the leaves
+    blocks.fill(DARK_OAK_LEAVES, pos(x - 2, y + 5, z - 2), pos(x + 2, y + 7, z + 2))
+
+# Function to create castle walls with corner towers
+def create_walls_with_towers(x, y, z, width, depth, height, tower_size, tower_height):
+    # Create main castle walls
+    blocks.fill(STONE_BRICKS, pos(x - width, y, z - depth), pos(x + width, y + height, z - depth))
+    blocks.fill(STONE_BRICKS, pos(x - width, y, z + depth), pos(x + width, y + height, z + depth))
+    blocks.fill(STONE_BRICKS, pos(x - width, y, z - depth), pos(x - width, y + height, z + depth))
+    blocks.fill(STONE_BRICKS, pos(x + width, y, z - depth), pos(x + width, y + height, z + depth))
+    
+    # Create battlements on walls
+    for i in range(-width, width + 1, 2):
+        blocks.fill(STONE_BRICKS, pos(x + i, y + height + 1, z - depth), pos(x + i, y + height + 1, z - depth))
+        blocks.fill(STONE_BRICKS, pos(x + i, y + height + 1, z + depth), pos(x + i, y + height + 1, z + depth))
+    for i in range(-depth, depth + 1, 2):
+        blocks.fill(STONE_BRICKS, pos(x - width, y + height + 1, z + i), pos(x - width, y + height + 1, z + i))
+        blocks.fill(STONE_BRICKS, pos(x + width, y + height + 1, z + i), pos(x + width, y + height + 1, z + i))
+
+    # Create corner towers
+    def create_tower(cx, cz):
+        blocks.fill(STONE_BRICKS, pos(cx - tower_size, y, cz - tower_size), pos(cx + tower_size, y + tower_height, cz + tower_size))
+        for i in range(-tower_size, tower_size + 1, 2):
+            blocks.fill(STONE_BRICKS, pos(cx + i, y + tower_height + 1, cz - tower_size), pos(cx + i, y + tower_height + 1, cz - tower_size))
+            blocks.fill(STONE_BRICKS, pos(cx + i, y + tower_height + 1, cz + tower_size), pos(cx + i, y + tower_height + 1, cz + tower_size))
+            blocks.fill(STONE_BRICKS, pos(cx - tower_size, y + tower_height + 1, cz + i), pos(cx - tower_size, y + tower_height + 1, cz + i))
+            blocks.fill(STONE_BRICKS, pos(cx + tower_size, y + tower_height + 1, cz + i), pos(cx + tower_size, y + tower_height + 1, cz + i))
+
+    create_tower(x - width, z - depth)
+    create_tower(x + width, z - depth)
+    create_tower(x - width, z + depth)
+    create_tower(x + width, z + depth)
+
+# Function to build a larger castle
+def build_large_castle(x, y, z):
+    castle_width = 15
+    castle_depth = 15
+    castle_height = 20
+    tower_size = 3
+    tower_height = 25
+    
+    # Create main castle walls
+    blocks.fill(STONE_BRICKS, pos(x - castle_width, y, z - castle_depth), pos(x + castle_width, y + castle_height, z - castle_depth))
+    blocks.fill(STONE_BRICKS, pos(x - castle_width, y, z + castle_depth), pos(x + castle_width, y + castle_height, z + castle_depth))
+    blocks.fill(STONE_BRICKS, pos(x - castle_width, y, z - castle_depth), pos(x - castle_width, y + castle_height, z + castle_depth))
+    blocks.fill(STONE_BRICKS, pos(x + castle_width, y, z - castle_depth), pos(x + castle_width, y + castle_height, z + castle_depth))
+    
+    # Create battlements on walls
+    for i in range(-castle_width, castle_width + 1, 2):
+        blocks.fill(STONE_BRICKS, pos(x + i, y + castle_height + 1, z - castle_depth), pos(x + i, y + castle_height + 1, z - castle_depth))
+        blocks.fill(STONE_BRICKS, pos(x + i, y + castle_height + 1, z + castle_depth), pos(x + i, y + castle_height + 1, z + castle_depth))
+    for i in range(-castle_depth, castle_depth + 1, 2):
+        blocks.fill(STONE_BRICKS, pos(x - castle_width, y + castle_height + 1, z + i), pos(x - castle_width, y + castle_height + 1, z + i))
+        blocks.fill(STONE_BRICKS, pos(x + castle_width, y + castle_height + 1, z + i), pos(x + castle_width, y + castle_height + 1, z + i))
+
+    # Create corner towers
+    def create_tower(cx, cz):
+        blocks.fill(STONE_BRICKS, pos(cx - tower_size, y, cz - tower_size), pos(cx + tower_size, y + tower_height, cz + tower_size))
+        for i in range(-tower_size, tower_size + 1, 2):
+            blocks.fill(STONE_BRICKS, pos(cx + i, y + tower_height + 1, cz - tower_size), pos(cx + i, y + tower_height + 1, cz - tower_size))
+            blocks.fill(STONE_BRICKS, pos(cx + i, y + tower_height + 1, cz + tower_size), pos(cx + i, y + tower_height + 1, cz + tower_size))
+            blocks.fill(STONE_BRICKS, pos(cx - tower_size, y + tower_height + 1, cz + i), pos(cx - tower_size, y + tower_height + 1, cz + i))
+            blocks.fill(STONE_BRICKS, pos(cx + tower_size, y + tower_height + 1, cz + i), pos(cx + tower_size, y + tower_height + 1, cz + i))
+
+    create_tower(x - castle_width, z - castle_depth)
+    create_tower(x + castle_width, z - castle_depth)
+    create_tower(x - castle_width, z + castle_depth)
+    create_tower(x + castle_width, z + castle_depth)
+
+    # Create the roof of the castle
+    blocks.fill(STONE_BRICKS, pos(x - castle_width, y + castle_height, z - castle_depth), pos(x + castle_width, y + castle_height, z + castle_depth))
+
+    # Create windows for the castle
+    for i in range(-castle_width + 2, castle_width - 1, 4):
+        blocks.fill(GLASS_PANE, pos(x + i, y + castle_height // 2, z - castle_depth), pos(x + i + 1, y + castle_height // 2 + 1, z - castle_depth))
+        blocks.fill(GLASS_PANE, pos(x + i, y + castle_height // 2, z + castle_depth), pos(x + i + 1, y + castle_height // 2 + 1, z + castle_depth))
+        blocks.fill(GLASS_PANE, pos(x - castle_width, y + castle_height // 2, z + i), pos(x - castle_width, y + castle_height // 2 + 1, z + i + 1))
+        blocks.fill(GLASS_PANE, pos(x + castle_width, y + castle_height // 2, z + i), pos(x + castle_width, y + castle_height // 2 + 1, z + i + 1))
+
+    # Create gates for the castle
+    blocks.fill(AIR, pos(x - 2, y, z - castle_depth), pos(x + 2, y + 4, z - castle_depth))
+    blocks.fill(AIR, pos(x - 2, y, z + castle_depth), pos(x + 2, y + 4, z + castle_depth))
+    blocks.fill(AIR, pos(x - castle_width, y, z - 2), pos(x - castle_width, y + 4, z + 2))
+    blocks.fill(AIR, pos(x + castle_width, y, z - 2), pos(x + castle_width, y + 4, z + 2))
+
+# Function to build a human-shaped statue
+def build_statue(x, y, z):
+    statue_height = 20
+    body_width = 4
+    body_depth = 2
+    head_size = 4
+    arm_length = 6
+    leg_length = 6
+    
+    # Create the legs
+    blocks.fill(STONE, pos(x - body_width//2, y, z - body_depth//2), pos(x - 1, y + leg_length - 1, z + body_depth//2))
+    blocks.fill(STONE, pos(x + 1, y, z - body_depth//2), pos(x + body_width//2, y + leg_length - 1, z + body_depth//2))
+    
+    # Create the body
+    blocks.fill(STONE, pos(x - body_width//2, y + leg_length, z - body_depth//2), pos(x + body_width//2, y + statue_height - head_size - 1, z + body_depth//2))
+    
+    # Create the arms
+    blocks.fill(STONE, pos(x - body_width//2 - 1, y + leg_length, z - body_depth//2), pos(x - body_width//2 - 1, y + leg_length + arm_length - 1, z + body_depth//2))
+    blocks.fill(STONE, pos(x + body_width//2 + 1, y + leg_length, z - body_depth//2), pos(x + body_width//2 + 1, y + leg_length + arm_length - 1, z + body_depth//2))
+    
+    # Create the head
+    blocks.fill(STONE, pos(x - head_size//2, y + statue_height - head_size, z - head_size//2), pos(x + head_size//2, y + statue_height, z + head_size//2))
+
+# Function to build a smaller human-shaped statue (like a child)
+def build_small_statue(x, y, z):
+    statue_height = 10
+    body_width = 2
+    body_depth = 1
+    head_size = 2
+    arm_length = 3
+    leg_length = 3
+    
+    # Create the legs
+    blocks.fill(STONE, pos(x - body_width//2, y, z - body_depth//2), pos(x - 1, y + leg_length - 1, z + body_depth//2))
+    blocks.fill(STONE, pos(x + 1, y, z - body_depth//2), pos(x + body_width//2, y + leg_length - 1, z + body_depth//2))
+    
+    # Create the body
+    blocks.fill(STONE, pos(x - body_width//2, y + leg_length, z - body_depth//2), pos(x + body_width//2, y + statue_height - head_size - 1, z + body_depth//2))
+    
+    # Create the arms
+    blocks.fill(STONE, pos(x - body_width//2 - 1, y + leg_length, z - body_depth//2), pos(x - body_width//2 - 1, y + leg_length + arm_length - 1, z + body_depth//2))
+    blocks.fill(STONE, pos(x + body_width//2 + 1, y + leg_length, z - body_depth//2), pos(x + body_width//2 + 1, y + leg_length + arm_length - 1, z + body_depth//2))
+    
+    # Create the head
+    blocks.fill(STONE, pos(x - head_size//2, y + statue_height - head_size, z - head_size//2), pos(x + head_size//2, y + statue_height, z + head_size//2))
+
+# Add statues near the castle
+def add_statues_near_castle(castle_x, castle_y, castle_z):
+    # Position the standing statue to the left of the castle
+    statue_x = castle_x - 70
+    statue_z = castle_z - 40
+    build_statue(statue_x, castle_y, statue_z)
+    
+    # Position the smaller statue near the larger one
+    small_statue_x = statue_x + 20
+    small_statue_z = statue_z - 10
+    build_small_statue(small_statue_x, castle_y, small_statue_z)
+
+# Function to place flowers in specific locations
+def place_flowers(x_start, y, z_start, x_end, z_end):
+    for x in range(x_start, x_end + 1, 6):  # Adjust the step for more spacing
+        for z in range(z_start, z_end + 1, 6):
+            blocks.place(YELLOW_FLOWER, pos(x, y, z))
+            blocks.place(FLOWERING_AZALEA_LEAVES, pos(x + 1, y, z))
+
+# Function to build a chessboard
+def build_chessboard(x, y, z, tile_size):
+    board_size = 8 * tile_size
+    for i in range(8):
+        for j in range(8):
+            if (i + j) % 2 == 0:
+                blocks.fill(BLOCK_OF_QUARTZ, pos(x + i * tile_size, y, z + j * tile_size), pos(x + (i + 1) * tile_size - 1, y, z + (j + 1) * tile_size - 1))
+            else:
+                blocks.fill(BLACK_CONCRETE, pos(x + i * tile_size, y, z + j * tile_size), pos(x + (i + 1) * tile_size - 1, y, z + (j + 1) * tile_size - 1))
+    place_pawns(x, y + 1, z, tile_size)
+
+# Function to place pawns on the chessboard
+def place_pawns(x, y, z, tile_size):
+    for i in range(8):
+        # Place white pawns
+        blocks.place(LIGHT_GRAY_WOOL, pos(x + i * tile_size, y, z + tile_size))
+        # Place black pawns
+        blocks.place(BLACK_WOOL, pos(x + i * tile_size, y, z + 6 * tile_size))
+
+# Main function to build houses, castle walls, and additional structures
+def build_houses_and_castle(num_houses, distance_between_houses):
+    initial_x = -5
+    initial_y = 0
+    initial_z = -5
+
+    # Calculate total width for houses
+    houses_per_row = 4
+    house_width = 7
+    house_depth = 7
+    rows_of_houses = (num_houses + houses_per_row - 1) // houses_per_row
+    total_width = houses_per_row * (house_width + distance_between_houses)
+    total_depth = rows_of_houses * (house_depth + distance_between_houses)
+
+    # Clear the area
+    blocks.fill(AIR, pos(initial_x - 10, initial_y, initial_z - total_depth), pos(initial_x + total_width * 3 + 10, initial_y + clear_height, initial_z + total_depth * 2))
+    blocks.fill(GRASS, pos(initial_x - 10, initial_y - 1, initial_z - total_depth), pos(initial_x + total_width * 3 + 10, initial_y - 1, initial_z + total_depth * 2))
+
+    # Build houses
+    for i in range(rows_of_houses):
+        for j in range(houses_per_row):
+            if i * houses_per_row + j >= num_houses:
+                break
+            x = initial_x + j * (house_width + distance_between_houses)
+            z = initial_z + i * (house_depth + distance_between_houses)
+            build_house(x, initial_y, z)
+
+    # Build central square
+    square_size = 10
+    square_x = initial_x + (total_width * 3) // 2
+    square_z = initial_z + (total_depth * 2) // 2
+    blocks.fill(STONE, pos(square_x - square_size, initial_y, square_z - square_size), pos(square_x + square_size, initial_y, square_z + square_size))
+
+    # Add trees around the square with a gap between each tree
+    for i in range(-square_size + 2, square_size - 1, 6):  # Adjusted step to 6 for gaps
+        build_tree(square_x + i, initial_y + 1, square_z - square_size - 1)
+        build_tree(square_x + i, initial_y + 1, square_z + square_size + 1)
+        build_tree(square_x - square_size - 1, initial_y + 1, square_z + i)
+        build_tree(square_x + square_size + 1, initial_y + 1, square_z + i)
+
+    # Build castle walls around the houses
+    walls_x = initial_x + (total_width * 3) // 2
+    walls_z = initial_z + (total_depth * 2) // 2
+    create_walls_with_towers(walls_x, initial_y, walls_z, (total_width * 3) // 2 + 5, (total_depth * 2) // 2 + 5, 10, 3, 15)
+
+    # Build river around the park and remove one block from the ground
+    river_width = 2
+
+    # Calculate positions for the river around the park
+    park_x_start = square_x - square_size - 3
+    park_x_end = square_x + square_size + 3
+    park_z_start = square_z - square_size - 3
+    park_z_end = square_z + square_size + 3
+
+    # Remove ground blocks to create the riverbed around the park
+    blocks.fill(AIR, pos(park_x_start, initial_y - 1, park_z_start),
+                      pos(park_x_end, initial_y - 1, park_z_start + river_width - 1))
+    blocks.fill(AIR, pos(park_x_start, initial_y - 1, park_z_end - river_width + 1),
+                      pos(park_x_end, initial_y - 1, park_z_end))
+    blocks.fill(AIR, pos(park_x_start, initial_y - 1, park_z_start + river_width),
+                      pos(park_x_start + river_width - 1, initial_y - 1, park_z_end - river_width))
+    blocks.fill(AIR, pos(park_x_end - river_width + 1, initial_y - 1, park_z_start + river_width),
+                      pos(park_x_end, initial_y - 1, park_z_end - river_width))
+
+    # Place water at the correct height around the park
+    blocks.fill(WATER, pos(park_x_start, initial_y - 1, park_z_start),
+                       pos(park_x_end, initial_y - 1, park_z_start + river_width - 1))
+    blocks.fill(WATER, pos(park_x_start, initial_y - 1, park_z_end - river_width + 1),
+                       pos(park_x_end, initial_y - 1, park_z_end))
+    blocks.fill(WATER, pos(park_x_start, initial_y - 1, park_z_start + river_width),
+                       pos(park_x_start + river_width - 1, initial_y - 1, park_z_end - river_width))
+    blocks.fill(WATER, pos(park_x_end - river_width + 1, initial_y - 1, park_z_start + river_width),
+                       pos(park_x_end, initial_y - 1, park_z_end - river_width))
+
+    # Build farm with glass walls next to the houses
+    farm_x_start = initial_x
+    farm_x_end = farm_x_start + 30
+    farm_z_start = initial_z + (total_depth * 2) // 2
+    farm_z_end = farm_z_start + 30
+    farm_height = 5
+
+    # Clear the area for the farm
+    blocks.fill(AIR, pos(farm_x_start, initial_y, farm_z_start), pos(farm_x_end, initial_y + farm_height, farm_z_end))
+
+    # Create the floor of the farm
+    blocks.fill(FARMLAND, pos(farm_x_start, initial_y, farm_z_start), pos(farm_x_end, initial_y, farm_z_end))
+
+    # Create the glass walls of the farm
+    blocks.fill(GLASS, pos(farm_x_start, initial_y + 1, farm_z_start), pos(farm_x_start, initial_y + farm_height, farm_z_end))
+    blocks.fill(GLASS, pos(farm_x_end, initial_y + 1, farm_z_start), pos(farm_x_end, initial_y + farm_height, farm_z_end))
+    blocks.fill(GLASS, pos(farm_x_start, initial_y + 1, farm_z_start), pos(farm_x_end, initial_y + farm_height, farm_z_start))
+    blocks.fill(GLASS, pos(farm_x_start, initial_y + 1, farm_z_end), pos(farm_x_end, initial_y + farm_height, farm_z_end))
+
+    # Create the ceiling of the farm
+    blocks.fill(GLASS, pos(farm_x_start, initial_y + farm_height, farm_z_start), pos(farm_x_end, initial_y + farm_height, farm_z_end))
+
+    # Add crops inside the farm
+    blocks.fill(WHEAT, pos(farm_x_start + 1, initial_y + 1, farm_z_start + 1), pos(farm_x_end - 1, initial_y + 1, farm_z_end - 1))
+
+    # Build a larger castle in the top right corner inside the walls
+    large_castle_x = walls_x + (total_width * 3) // 2 - 30
+    large_castle_z = walls_z + (total_depth * 2) // 2 - 30
+    build_large_castle(large_castle_x, initial_y, large_castle_z)
+
+    # Add statues near the castle
+    add_statues_near_castle(large_castle_x, initial_y, large_castle_z)
+
+    # Example: Animal pen near the farm
+    build_animal_pen(farm_x_end + 5, initial_y, farm_z_start, 10, 10)
+
+    # Example: Additional animal pen near the first one
+    build_animal_pen(farm_x_end + 20, initial_y, farm_z_start, 10, 10)
+
+    # Example: Animal pen near the farm
+    build_animal_pen(farm_x_end + 5, initial_y, farm_z_start, 10, 30)
+
+    # Example: Additional animal pen near the first one
+    build_animal_pen(farm_x_end + 20, initial_y, farm_z_start, 10, 30)
+
+
+# Place flowers in various parts
+    place_flowers(initial_x + 10, initial_y, initial_z + 10, initial_x + 30, initial_z + 30)
+    place_flowers(initial_x + 40, initial_y, initial_z + 40, initial_x + 60, initial_z + 60)
+    place_flowers(walls_x - 20, initial_y, walls_z - 20, walls_x - 10, walls_z - 10)
+    place_flowers(farm_x_start + 5, initial_y, farm_z_start + 5, farm_x_start + 20, farm_z_start + 20)
+
+# Build chessboard to the left of the castle
+    chessboard_x = large_castle_x - 40
+    chessboard_z = large_castle_z
+    build_chessboard(chessboard_x, initial_y, chessboard_z, 1)
+
+# Function to build an animal pen
+def build_animal_pen(x, y, z, width, depth):
+    # Create the pen fence
+    blocks.fill(OAK_FENCE, pos(x, y, z), pos(x + width, y + 1, z))
+    blocks.fill(OAK_FENCE, pos(x, y, z + depth), pos(x + width, y + 1, z + depth))
+    blocks.fill(OAK_FENCE, pos(x, y, z), pos(x, y + 1, z + depth))
+    blocks.fill(OAK_FENCE, pos(x + width, y, z), pos(x + width, y + 1, z + depth))
+    # Add animals
+    mobs.spawn(COW, pos(x + width // 2, y + 1, z + depth // 2))
+
+# Call the main function to build houses, castle walls, and additional structures
+build_houses_and_castle(12, 10)  # Build 12 houses with a distance of 10 blocks between them
